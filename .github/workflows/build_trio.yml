@@ -201,7 +201,7 @@ jobs:
           #curl https://github.com/nightscout/Trio/commit/d206432b024279ef710df462b20bd464cd9682d4.patch | git apply -v --whitespace=fix
 
           # Module: OmniBLE - iPhone 16 Keep Alive
-          curl https://github.com/sdobart/OmniBLE/commit/9f39f195b02e0415c479da9e25af143e9f461a30.patch | git apply -v --directory=OmniBLE
+          curl https://github.com/loopandlearn/OmniBLE/commit/9f39f195b02e0415c479da9e25af143e9f461a30.patch | git apply -v --directory=OmniBLE
 
           # Download and apply Submodule patches from GitHub:
           # Template for customizing submodules (you must edit the submodule name)
