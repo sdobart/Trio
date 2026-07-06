@@ -22,6 +22,7 @@ extension Home {
         @State var state = StateModel()
 
         @State var settingsPath = NavigationPath()
+        @State var settingsSearchHighlight = SettingsSearchHighlight()
         @State var isStatusPopupPresented = false
         @State var showCancelAlert = false
         @State var showCancelConfirmDialog = false
@@ -132,20 +133,24 @@ extension Home {
                 cgmAvailable: state.cgmAvailable,
                 currentGlucoseTarget: state.currentGlucoseTarget,
                 glucoseColorScheme: state.glucoseColorScheme,
-                glucose: state.latestTwoGlucoseValues
-            ).scaleEffect(0.9)
-                .onTapGesture {
-                    if !state.cgmAvailable {
-                        showCGMSelection.toggle()
-                    } else {
-                        state.shouldDisplayCGMSetupSheet.toggle()
-                    }
+                glucose: state.latestTwoGlucoseValues,
+                cgmProgress: state.cgmProgressHighlight,
+                cgmStatus: state.cgmDisplayState,
+                cgmSensorExpiresAt: state.cgmSensorExpiresAt,
+                cgmWarmupEndsAt: state.cgmWarmupEndsAt
+            )
+            .onTapGesture {
+                if !state.cgmAvailable {
+                    showCGMSelection.toggle()
+                } else {
+                    state.shouldDisplayCGMSetupSheet.toggle()
                 }
-                .onLongPressGesture {
-                    let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-                    impactHeavy.impactOccurred()
-                    state.showModal(for: .snooze)
-                }
+            }
+            .onLongPressGesture {
+                let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                impactHeavy.impactOccurred()
+                state.showModal(for: .snooze)
+            }
         }
 
         var pumpView: some View {
@@ -993,8 +998,7 @@ extension Home {
             // PUMP RELATED
             .confirmationDialog("Pump Model", isPresented: $showPumpSelection) {
                 Button("Medtronic") { state.addPump(.minimed) }
-                Button("Omnipod Eros") { state.addPump(.omnipod) }
-                Button("Omnipod DASH") { state.addPump(.omnipodBLE) }
+                Button("All Omnipod Types") { state.addPump(.omni) }
                 Button("Dana(RS/-i)") { state.addPump(.dana) }
                 Button("Medtrum Nano") { state.addPump(.medtrum) }
                 Button("Pump Simulator") { state.addPump(.simulator) }
@@ -1097,6 +1101,7 @@ extension Home {
 
                     NavigationStack(path: self.$settingsPath) {
                         Settings.RootView(resolver: resolver) }
+                        .environment(settingsSearchHighlight)
                         .tabItem { Label(
                             "Settings",
                             systemImage: "gear"
